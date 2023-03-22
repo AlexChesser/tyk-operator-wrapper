@@ -2,9 +2,9 @@
 
 https://docs.docker.com/engine/reference/commandline/push/
 
-`docker build -t alexchesser/tyk-operator-wrapper`
-`docker login`
-`docker push docker alexchesser/tyk-operator-wrapper`
+`docker build . -t alexchesser/tyk-operator-wrapper`   
+`docker login`  
+`docker push docker alexchesser/tyk-operator-wrapper`  
 
 # Required environment variables
 
