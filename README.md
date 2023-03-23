@@ -14,8 +14,11 @@ see the values in `.tyk.operator.env.sample` they must be set for this to functi
 
 ```
 docker run -it --rm \
-  -v ${PWD}/api-endpoint-configuration:/output \
+  -v ${PWD}/config/tyk:/output/dist \
   --env-file .tyk.operator.env \
+  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+  --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+  --env AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
   alexchesser/tyk-operator-wrapper \
   /workspace/connect-and-export.sh
 ```
