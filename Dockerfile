@@ -20,23 +20,22 @@ WORKDIR /workspace
 ## then tyk operator snapshot supports "snapshot-UX-improvement" coy directly from the tyk container
 COPY --from=builder /build/manager ./tyk-operator
 
-# Create startup script to connect to the correct EKS instance
-COPY <<EOF configure-k8s.sh
+# Create three scripts
+#   1. startup script to connect to the correct EKS instance
+#   2. output api definitions based on the current category
+#   3. run both other stripts as the default command for the container
+COPY <<configure-k8s.sh <<export-defs.sh <<connect-and-export.sh /workspace
 aws eks update-kubeconfig --region us-east-1 --name \${K8S_CLUSTER_NAME}
-EOF
-
-# Add a one-line command script for outputting API and POLICY defs
-COPY <<EOF export-defs.sh
+configure-k8s.sh
 echo exporting apis and policies for category \${API_EXPORT_CATEGORY}
+rm -rf /output/dist/*.yaml
 cd /output
 echo RUNNING COMMAND: /workspace/tyk-operator -separate -category \${API_EXPORT_CATEGORY}
 /workspace/tyk-operator -separate -category \${API_EXPORT_CATEGORY}
-EOF
-
-COPY <<EOF connect-and-export.sh
+export-defs.sh
 #!/bin/bash
 /workspace/configure-k8s.sh && /workspace/export-defs.sh
-EOF
+connect-and-export.sh
 RUN chmod +x configure-k8s.sh export-defs.sh connect-and-export.sh
 
 CMD  "./configure-k8s.sh" && /bin/bash
