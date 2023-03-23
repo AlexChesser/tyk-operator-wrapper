@@ -24,7 +24,6 @@ COPY --from=builder /build/manager ./tyk-operator
 COPY <<EOF configure-k8s.sh
 aws eks update-kubeconfig --region us-east-1 --name \${K8S_CLUSTER_NAME}
 EOF
-RUN chmod +x configure-k8s.sh
 
 # Add a one-line command script for outputting API and POLICY defs
 COPY <<EOF export-defs.sh
@@ -33,12 +32,11 @@ cd /output
 echo RUNNING COMMAND: /workspace/tyk-operator -separate -category \${API_EXPORT_CATEGORY}
 /workspace/tyk-operator -separate -category \${API_EXPORT_CATEGORY}
 EOF
-RUN chmod +x export-defs.sh
 
 COPY <<EOF connect-and-export.sh
 #!/bin/bash
 /workspace/configure-k8s.sh && /workspace/export-defs.sh
 EOF
-RUN chmod +x connect-and-export.sh
+RUN chmod +x configure-k8s.sh export-defs.sh connect-and-export.sh
 
 CMD  "./configure-k8s.sh" && /bin/bash
