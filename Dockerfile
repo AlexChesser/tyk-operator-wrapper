@@ -22,7 +22,7 @@ RUN echo "aws eks update-kubeconfig --region us-east-1 --name \${K8S_CLUSTER_NAM
     && chmod +x configure-k8s.sh
 
 # Add a one-line command script for outputting API and POLICY defs
-RUN echo "./tyk-operator --separate --category \${API_EXPORT_CATEGORY}" > export-defs.sh \
+RUN echo "./tyk-operator --policy /output/policy.yaml --apidef /output/apidef.yaml --category \${API_EXPORT_CATEGORY}" > export-defs.sh \
     && chmod +x export-defs.sh
 
 RUN echo "#!/bin/bash" > connect-and-export.sh \
